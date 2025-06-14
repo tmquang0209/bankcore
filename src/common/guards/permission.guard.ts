@@ -1,12 +1,16 @@
 import { PERMISSION_KEY } from '@common/enums';
 import { BasicInfoDto } from '@dto/auth.dto';
-import { PermissionEntity, RolePermissionsEntity, UserEntity } from '@entities';
+import {
+  EmployeeEntity,
+  PermissionEntity,
+  RolePermissionsEntity,
+} from '@entities';
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 
 @Injectable()
 export class PermissionGuard implements CanActivate {
-  constructor(private reflector: Reflector) {}
+  constructor(private readonly reflector: Reflector) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const requiredPermissions = this.reflector.getAllAndOverride<string[]>(
@@ -21,7 +25,7 @@ export class PermissionGuard implements CanActivate {
     const user: BasicInfoDto | undefined = request['user'];
 
     // get permissions from user
-    const userInfo = await UserEntity.findOne({
+    const userInfo = await EmployeeEntity.findOne({
       where: { id: user?.id },
     });
 

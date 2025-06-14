@@ -1,196 +1,189 @@
-import { PermissionKeys } from '@common/enums';
 import { PermissionEntity } from '@entities';
 import { Logger } from '@nestjs/common';
+
 export const permissionSeed = [
+  // === KHÁCH HÀNG ===
   {
-    code: PermissionKeys.USER_CREATE,
-    name: 'Tạo người dùng',
-    description: 'Cho phép tạo người dùng mới',
+    code: 'customer:create',
+    name: 'Tạo khách hàng',
+    description: 'Cho phép tạo mới khách hàng',
   },
   {
-    code: PermissionKeys.USER_READ,
-    name: 'Xem thông tin người dùng',
-    description: 'Cho phép xem danh sách và thông tin người dùng',
+    code: 'customer:read',
+    name: 'Xem khách hàng',
+    description: 'Cho phép xem danh sách và thông tin khách hàng',
   },
   {
-    code: PermissionKeys.USER_UPDATE,
-    name: 'Cập nhật người dùng',
-    description: 'Cho phép cập nhật thông tin người dùng',
+    code: 'customer:update',
+    name: 'Cập nhật khách hàng',
+    description: 'Cho phép chỉnh sửa thông tin khách hàng',
   },
   {
-    code: PermissionKeys.USER_DELETE,
-    name: 'Xóa người dùng',
-    description: 'Cho phép xóa người dùng khỏi hệ thống',
+    code: 'customer:delete',
+    name: 'Xóa khách hàng',
+    description: 'Cho phép xóa khách hàng khỏi hệ thống',
+  },
+
+  // === TÀI KHOẢN NGÂN HÀNG ===
+  {
+    code: 'account:create',
+    name: 'Tạo tài khoản ngân hàng',
+    description: 'Cho phép mở tài khoản ngân hàng cho khách hàng',
   },
   {
-    code: PermissionKeys.EQUIPMENT_CREATE,
-    name: 'Thêm thiết bị',
-    description: 'Cho phép thêm thiết bị mới vào hệ thống',
+    code: 'account:read',
+    name: 'Xem tài khoản ngân hàng',
+    description: 'Cho phép xem thông tin tài khoản ngân hàng',
   },
   {
-    code: PermissionKeys.EQUIPMENT_READ,
-    name: 'Xem thiết bị',
-    description: 'Cho phép xem danh sách và thông tin thiết bị',
+    code: 'account:update',
+    name: 'Cập nhật tài khoản ngân hàng',
+    description: 'Cho phép chỉnh sửa thông tin tài khoản ngân hàng',
   },
   {
-    code: PermissionKeys.EQUIPMENT_UPDATE,
-    name: 'Cập nhật thiết bị',
-    description: 'Cho phép cập nhật thông tin thiết bị',
+    code: 'account:delete',
+    name: 'Xóa tài khoản ngân hàng',
+    description: 'Cho phép xóa tài khoản ngân hàng',
+  },
+
+  // === GIAO DỊCH ===
+  {
+    code: 'transaction:read',
+    name: 'Xem giao dịch',
+    description: 'Cho phép xem danh sách và chi tiết giao dịch',
   },
   {
-    code: PermissionKeys.EQUIPMENT_DELETE,
-    name: 'Xóa thiết bị',
-    description: 'Cho phép xóa thiết bị khỏi hệ thống',
+    code: 'transaction:create',
+    name: 'Tạo giao dịch',
+    description: 'Cho phép tạo giao dịch thủ công',
+  },
+
+  // === THẺ NGÂN HÀNG ===
+  {
+    code: 'card:create',
+    name: 'Cấp thẻ',
+    description: 'Cho phép phát hành thẻ ngân hàng',
   },
   {
-    code: PermissionKeys.ROLE_CREATE,
-    name: 'Tạo vai trò',
-    description: 'Cho phép tạo vai trò mới',
+    code: 'card:read',
+    name: 'Xem thẻ',
+    description: 'Cho phép xem thông tin thẻ',
   },
   {
-    code: PermissionKeys.ROLE_READ,
-    name: 'Xem vai trò',
-    description: 'Cho phép xem danh sách và thông tin vai trò',
+    code: 'card:update',
+    name: 'Cập nhật thẻ',
+    description: 'Cho phép cập nhật thông tin thẻ',
+  },
+
+  // === KHOẢN VAY ===
+  {
+    code: 'loan:create',
+    name: 'Tạo khoản vay',
+    description: 'Cho phép tạo mới khoản vay cho khách hàng',
   },
   {
-    code: PermissionKeys.ROLE_UPDATE,
-    name: 'Cập nhật vai trò',
-    description: 'Cho phép cập nhật thông tin vai trò',
+    code: 'loan:read',
+    name: 'Xem khoản vay',
+    description: 'Cho phép xem thông tin các khoản vay',
   },
   {
-    code: PermissionKeys.ROLE_DELETE,
-    name: 'Xóa vai trò',
-    description: 'Cho phép xóa vai trò khỏi hệ thống',
+    code: 'loan:update',
+    name: 'Cập nhật khoản vay',
+    description: 'Cho phép cập nhật thông tin khoản vay',
+  },
+
+  // === LỊCH TRẢ KHOẢN VAY ===
+  {
+    code: 'loan-schedule:read',
+    name: 'Xem lịch trả khoản vay',
+    description: 'Cho phép xem lịch thanh toán của khoản vay',
   },
   {
-    code: PermissionKeys.PERMISSION_CREATE,
-    name: 'Tạo quyền',
-    description: 'Cho phép tạo quyền mới',
+    code: 'loan-schedule:update',
+    name: 'Cập nhật lịch trả',
+    description: 'Cho phép chỉnh sửa thông tin trả nợ',
+  },
+
+  // === NHÂN VIÊN ===
+  {
+    code: 'staff:create',
+    name: 'Tạo nhân viên',
+    description: 'Cho phép thêm mới nhân viên',
   },
   {
-    code: PermissionKeys.PERMISSION_READ,
-    name: 'Xem quyền',
-    description: 'Cho phép xem danh sách và thông tin quyền',
+    code: 'staff:read',
+    name: 'Xem nhân viên',
+    description: 'Cho phép xem thông tin nhân viên',
   },
   {
-    code: PermissionKeys.PERMISSION_UPDATE,
-    name: 'Cập nhật quyền',
-    description: 'Cho phép cập nhật thông tin quyền',
+    code: 'staff:update',
+    name: 'Cập nhật nhân viên',
+    description: 'Cho phép chỉnh sửa thông tin nhân viên',
   },
   {
-    code: PermissionKeys.PERMISSION_DELETE,
-    name: 'Xóa quyền',
-    description: 'Cho phép xóa quyền khỏi hệ thống',
+    code: 'staff:delete',
+    name: 'Xóa nhân viên',
+    description: 'Cho phép xóa nhân viên',
+  },
+
+  // === TÀI KHOẢN NHÂN VIÊN ===
+  {
+    code: 'staff-account:update',
+    name: 'Quản lý tài khoản nhân viên',
+    description: 'Cho phép quản lý đăng nhập và vai trò của nhân viên',
+  },
+
+  // === VAI TRÒ VÀ PHÂN QUYỀN ===
+  {
+    code: 'role:manage',
+    name: 'Quản lý vai trò',
+    description: 'Cho phép tạo, cập nhật và xóa vai trò',
   },
   {
-    code: PermissionKeys.ROLE_PERMISSION_ASSIGN,
-    name: 'Gán quyền cho vai trò',
-    description: 'Cho phép gán quyền cho vai trò',
+    code: 'permission:manage',
+    name: 'Quản lý quyền',
+    description: 'Cho phép cấu hình các quyền truy cập',
   },
   {
-    code: PermissionKeys.ROLE_PERMISSION_REVOKE,
-    name: 'Thu hồi quyền từ vai trò',
-    description: 'Cho phép thu hồi quyền từ vai trò',
-  },
-  {
-    code: PermissionKeys.USER_ROLE_ASSIGN,
-    name: 'Gán vai trò cho người dùng',
+    code: 'role:assign',
+    name: 'Gán vai trò',
     description: 'Cho phép gán vai trò cho người dùng',
   },
   {
-    code: PermissionKeys.USER_ROLE_REVOKE,
-    name: 'Thu hồi vai trò từ người dùng',
-    description: 'Cho phép thu hồi vai trò từ người dùng',
+    code: 'permission:assign',
+    name: 'Gán quyền',
+    description: 'Cho phép gán quyền cho vai trò',
+  },
+
+  // === NHẬT KÝ HỆ THỐNG ===
+  {
+    code: 'audit-log:read',
+    name: 'Xem nhật ký hệ thống',
+    description: 'Cho phép xem hoạt động hệ thống của nhân viên',
   },
   {
-    code: PermissionKeys.INTERFACE_READ,
-    name: 'Xem giao diện',
-    description: 'Cho phép xem danh sách và thông tin giao diện',
+    code: 'customer-log:read',
+    name: 'Xem nhật ký khách hàng',
+    description: 'Cho phép xem hành động khách hàng đã thực hiện',
   },
+
+  // === THÔNG BÁO ===
   {
-    code: PermissionKeys.TRAINING_CREATE,
-    name: 'Tạo chương trình huấn luyện',
-    description: 'Cho phép tạo chương trình huấn luyện mới',
+    code: 'notification:manage',
+    name: 'Quản lý thông báo',
+    description: 'Cho phép tạo và gửi thông báo đến khách hàng',
   },
+
+  // === DANH MỤC HỆ THỐNG ===
   {
-    code: PermissionKeys.TRAINING_READ,
-    name: 'Xem chương trình huấn luyện',
-    description: 'Cho phép xem danh sách và thông tin chương trình huấn luyện',
-  },
-  {
-    code: PermissionKeys.TRAINING_UPDATE,
-    name: 'Cập nhật chương trình huấn luyện',
-    description: 'Cho phép cập nhật thông tin chương trình huấn luyện',
-  },
-  {
-    code: PermissionKeys.TRAINING_DELETE,
-    name: 'Xóa chương trình huấn luyện',
-    description: 'Cho phép xóa chương trình huấn luyện khỏi hệ thống',
-  },
-  {
-    code: PermissionKeys.DIAGRAM_CREATE,
-    name: 'Tạo sơ đồ',
-    description: 'Cho phép tạo sơ đồ mới',
-  },
-  {
-    code: PermissionKeys.DIAGRAM_READ,
-    name: 'Xem sơ đồ',
-    description: 'Cho phép xem danh sách và thông tin sơ đồ',
-  },
-  {
-    code: PermissionKeys.DIAGRAM_UPDATE,
-    name: 'Cập nhật sơ đồ',
-    description: 'Cho phép cập nhật thông tin sơ đồ',
-  },
-  {
-    code: PermissionKeys.DIAGRAM_DELETE,
-    name: 'Xóa sơ đồ',
-    description: 'Cho phép xóa sơ đồ khỏi hệ thống',
-  },
-  {
-    code: PermissionKeys.DOCUMENT_READ,
-    name: 'Xem tài liệu',
-    description: 'Cho phép xem danh sách và thông tin tài liệu',
-  },
-  {
-    code: PermissionKeys.DOCUMENT_CREATE,
-    name: 'Tạo tài liệu',
-    description: 'Cho phép tạo tài liệu mới',
-  },
-  {
-    code: PermissionKeys.DOCUMENT_UPDATE,
-    name: 'Cập nhật tài liệu',
-    description: 'Cho phép cập nhật thông tin tài liệu',
-  },
-  {
-    code: PermissionKeys.DOCUMENT_DELETE,
-    name: 'Xóa tài liệu',
-    description: 'Cho phép xóa tài liệu khỏi hệ thống',
-  },
-  {
-    code: PermissionKeys.QUIZZ_CREATE,
-    name: 'Tạo câu hỏi trắc nghiệm',
-    description: 'Cho phép tạo câu hỏi trắc nghiệm mới',
-  },
-  {
-    code: PermissionKeys.QUIZZ_READ,
-    name: 'Làm trắc nghiệm',
-    description: 'Cho phép làm trắc nghiệm',
-  },
-  {
-    code: PermissionKeys.QUIZZ_UPDATE,
-    name: 'Cập nhật câu hỏi trắc nghiệm',
-    description: 'Cho phép cập nhật thông tin câu hỏi trắc nghiệm',
-  },
-  {
-    code: PermissionKeys.QUIZZ_DELETE,
-    name: 'Xóa câu hỏi trắc nghiệm',
-    description: 'Cho phép xóa câu hỏi trắc nghiệm khỏi hệ thống',
+    code: 'category:manage',
+    name: 'Quản lý danh mục hệ thống',
+    description:
+      'Cho phép cấu hình các loại tài khoản, giao dịch, thẻ, vay, tiền tệ,...',
   },
 ];
-export class PermissionSeeder {
-  constructor() {}
 
+export class PermissionSeeder {
   async truncate() {
     await PermissionEntity.sequelize?.query('SET FOREIGN_KEY_CHECKS = 0;');
     await PermissionEntity.destroy({

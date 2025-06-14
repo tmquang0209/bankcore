@@ -9,14 +9,18 @@ import {
 import { PermissionEntity } from './permission.entity';
 import { RoleEntity } from './role.entity';
 
-@Table({ tableName: 'role_permissions', timestamps: false })
+@Table({ tableName: 'vai_tro_quyen_han', timestamps: false })
 export class RolePermissionsEntity extends BaseEntity<RolePermissionsEntity> {
   @ForeignKey(() => RoleEntity)
-  @Column({ field: 'role_id', type: DataType.UUID, allowNull: false })
+  @Column({ field: 'ma_vai_tro', type: DataType.UUID, allowNull: false })
   declare roleId: string;
 
   @ForeignKey(() => PermissionEntity)
-  @Column({ field: 'permission_id', type: DataType.UUID, allowNull: false })
+  @Column({
+    field: 'ma_quyen_han',
+    type: DataType.STRING(50),
+    allowNull: false,
+  })
   declare permissionId: string;
 
   @BelongsTo(() => RoleEntity, {

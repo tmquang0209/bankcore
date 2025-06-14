@@ -1,8 +1,8 @@
+import { EGender } from '@common/enums';
 import { PaginationDto } from '@dto';
 import { Transform, TransformFnParams } from 'class-transformer';
 import {
   IsBoolean,
-  IsDate,
   IsNotEmpty,
   IsOptional,
   IsString,
@@ -14,7 +14,7 @@ import {
 export class CreateUserDto {
   @IsNotEmpty()
   @IsString()
-  readonly fullName: string;
+  readonly name: string;
 
   @IsNotEmpty()
   @IsString()
@@ -23,49 +23,19 @@ export class CreateUserDto {
   @IsNotEmpty()
   readonly password: string;
 
-  @IsOptional()
   @IsString()
-  readonly phoneNumber: string;
-
-  @IsOptional()
-  @IsDate()
-  readonly birthday: Date;
+  readonly phone: string;
 
   @IsOptional()
   @IsString()
-  readonly address: string;
+  readonly gender: EGender;
 
   @IsOptional()
   @IsUUID()
   readonly roleId: string;
 }
 
-export class UpdateUserDto {
-  @IsOptional()
-  @IsString()
-  readonly fullName: string;
-
-  @IsOptional()
-  @IsString()
-  readonly email: string;
-
-  @IsOptional()
-  @IsString()
-  readonly phoneNumber: string;
-
-  @IsOptional()
-  @IsDate()
-  readonly birthday: Date;
-
-  @IsOptional()
-  @IsString()
-  readonly address: string;
-
-  @IsOptional()
-  @IsUUID()
-  readonly roleId: string;
-
-  @IsOptional()
+export class UpdateUserDto extends CreateUserDto {
   @IsString()
   @IsNotEmpty()
   readonly id: string;
@@ -73,16 +43,17 @@ export class UpdateUserDto {
 
 export class ChangePasswordDto {
   @IsString()
-  @IsNotEmpty({ message: 'Old password cannot be empty' })
+  @IsNotEmpty({ message: 'Mật khẩu cũ không được để trống' })
   oldPassword: string;
 
-  @IsNotEmpty({ message: 'New password cannot be empty' })
-  @IsString()
-  @MinLength(8)
+  @IsNotEmpty({ message: 'Mật khẩu mới không được để trống' })
+  @IsString({ message: 'Mật khẩu mới phải là chuỗi ký tự' })
+  @MinLength(8, { message: 'Mật khẩu mới phải có ít nhất 8 ký tự' })
   @Matches(
     /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
     {
-      message: `Must contain at least 8 characters, one lowercase letter, one uppercase letter, one digit, one special character(!,@,#,$,%,...)`,
+      message:
+        'Mật khẩu mới phải có ít nhất 8 ký tự, bao gồm chữ thường, chữ hoa, số và ký tự đặc biệt (!,@,#,$,%,...)',
     },
   )
   @Transform(({ value }: TransformFnParams) => value?.trim())

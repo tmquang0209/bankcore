@@ -18,12 +18,11 @@ export class ForgotPasswordDto {
 export class BasicInfoDto {
   readonly accessToken: string;
   readonly refreshToken: string;
-  readonly fullName: string;
-  readonly email: string;
-  readonly phoneNumber: string;
-  readonly birthday?: Date;
-  readonly status: boolean;
   readonly id: string;
+  readonly name: string;
+  readonly email: string;
+  readonly phone: string;
+  readonly status: boolean;
   readonly role?: {
     id: string;
     name: string;

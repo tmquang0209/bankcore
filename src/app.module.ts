@@ -2,10 +2,23 @@ import { databaseConfig } from '@common/database';
 import { JwtStrategy, RefreshTokenStrategy } from '@common/guards';
 import { AuthController, UploadController, UserController } from '@controllers';
 import {
+  AccountEntity,
+  AccountTypeEntity,
+  CardEntity,
+  CardTypeEntity,
+  CurrencyEntity,
+  CustomerEntity,
+  CustomerLogEntity,
+  EmployeeEntity,
+  LoanEntity,
+  LoanHistoryEntity,
+  LoanTypeEntity,
   PermissionEntity,
   RoleEntity,
   RolePermissionsEntity,
-  UserEntity,
+  SystemLogEntity,
+  TransactionEntity,
+  TransactionTypeEntity,
 } from '@entities';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
@@ -38,10 +51,23 @@ import { RoleController } from './controllers/role.controller';
       }),
     }),
     SequelizeModule.forFeature([
-      UserEntity,
+      EmployeeEntity,
       RoleEntity,
       RolePermissionsEntity,
       PermissionEntity,
+      SystemLogEntity,
+      CustomerEntity,
+      CustomerLogEntity,
+      CurrencyEntity,
+      AccountEntity,
+      AccountTypeEntity,
+      TransactionEntity,
+      TransactionTypeEntity,
+      CardTypeEntity,
+      CardEntity,
+      LoanTypeEntity,
+      LoanEntity,
+      LoanHistoryEntity,
     ]),
     SequelizeModule.forRootAsync({
       useFactory: databaseConfig,
