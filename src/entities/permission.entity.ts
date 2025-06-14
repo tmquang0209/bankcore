@@ -6,21 +6,39 @@ import {
   Column,
   DataType,
   HasMany,
+  PrimaryKey,
   Table,
 } from 'sequelize-typescript';
 import { RolePermissionsEntity } from './role-permissions.entity';
 import { RoleEntity } from './role.entity';
 
-@Table({ tableName: 'permissions', timestamps: true })
+@Table({ tableName: 'quyen_han', timestamps: true })
 export class PermissionEntity extends BaseEntity<PermissionEntity> {
-  @Column({ field: 'code', type: DataType.STRING(255), allowNull: false })
+  @PrimaryKey
+  @Column({
+    field: 'id',
+    type: DataType.UUID,
+    defaultValue: DataType.UUIDV4,
+    allowNull: false,
+  })
+  declare id: string;
+
+  @Column({
+    field: 'ma_quyen_han',
+    type: DataType.STRING(50),
+    allowNull: false,
+  })
   declare code: string;
 
-  @Column({ field: 'name', type: DataType.STRING(255), allowNull: true })
+  @Column({
+    field: 'ten_quyen_han',
+    type: DataType.STRING(255),
+    allowNull: true,
+  })
   declare name: string;
 
   @Column({
-    field: 'description',
+    field: 'mo_ta_quyen_han',
     type: DataType.STRING(500),
     allowNull: true,
   })
@@ -28,7 +46,7 @@ export class PermissionEntity extends BaseEntity<PermissionEntity> {
 
   @HasMany(() => RolePermissionsEntity, {
     foreignKey: 'permissionId',
-    sourceKey: 'id',
+    sourceKey: 'code',
   })
   rolePermissions: RolePermissionsEntity[];
 
@@ -49,7 +67,8 @@ export class PermissionEntity extends BaseEntity<PermissionEntity> {
 
   @BeforeBulkCreate
   static verifyCodeFormatBulk(permissions: PermissionEntity[]) {
-    const regex = /^[a-zA-Z0-9-]+:(create|read|update|delete|assign|revoke)$/;
+    const regex =
+      /^[a-zA-Z0-9-]+:(create|read|update|delete|assign|revoke|manage)$/;
 
     for (const permission of permissions) {
       if (!regex.test(permission.code)) {
