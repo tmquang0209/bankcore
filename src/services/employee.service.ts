@@ -5,10 +5,10 @@ import {
   UpdateUserDto,
 } from '@dto';
 import {
+  EmployeeEntity,
   PermissionEntity,
   RoleEntity,
   RolePermissionsEntity,
-  UserEntity,
 } from '@entities';
 import {
   BadRequestException,
@@ -24,14 +24,14 @@ import { Sequelize } from 'sequelize-typescript';
 @Injectable()
 export class UserService {
   constructor(
-    @InjectModel(UserEntity)
-    private userRepo: typeof UserEntity,
-    private roleService: RoleService,
+    @InjectModel(EmployeeEntity)
+    private readonly employeeRepo: typeof EmployeeEntity,
+    private readonly roleService: RoleService,
     private readonly sequelize: Sequelize,
   ) {}
 
   async createUser(params: CreateUserDto) {
-    const existingUser = await this.userRepo.findOne({
+    const existingUser = await this.employeeRepo.findOne({
       where: { email: params.email },
     });
 
@@ -46,14 +46,14 @@ export class UserService {
     }
 
     // create user step
-    const newUser = await this.userRepo.create(params as UserEntity);
+    const newUser = await this.employeeRepo.create(params as EmployeeEntity);
     return newUser;
   }
 
   async updateUser(
     params: UpdateUserDto,
   ): Promise<Omit<BasicInfoDto, 'accessToken' | 'refreshToken'>> {
-    const user = await this.userRepo.findByPk(params.id, {
+    const user = await this.employeeRepo.findByPk(params.id, {
       include: [
         {
           model: RoleEntity,
@@ -98,10 +98,9 @@ export class UserService {
 
     return {
       id: user.id,
-      fullName: user.fullName,
+      name: user.name,
       email: user.email,
-      phoneNumber: user.phoneNumber,
-      birthday: user.birthday,
+      phone: user.phone,
       status: user.status,
       role: {
         id: user.role.id,
@@ -117,7 +116,7 @@ export class UserService {
   }
 
   async getListUsers() {
-    // return await this.userRepo.findAll({
+    // return await this.employeeRepo.findAll({
     //   attributes: ['id', 'fullName', 'email'],
     //   where: { status: UserStatus.ACTIVE },
     //   include: [
@@ -133,7 +132,7 @@ export class UserService {
   async getUserById(
     id: string,
   ): Promise<Omit<BasicInfoDto, 'accessToken' | 'refreshToken'>> {
-    const user = await this.userRepo.findOne({
+    const user = await this.employeeRepo.findOne({
       where: { id },
       attributes: ['id', 'fullName', 'email', 'phoneNumber', 'birthday'],
       include: [
@@ -170,10 +169,9 @@ export class UserService {
 
     return {
       id: user.id,
-      fullName: user.fullName,
+      name: user.name,
       email: user.email,
-      phoneNumber: user.phoneNumber,
-      birthday: user.birthday,
+      phone: user.phone,
       status: user.status,
       role: {
         id: user.role.id,
@@ -189,11 +187,11 @@ export class UserService {
   }
 
   getUserByEmail(email: string) {
-    return this.userRepo.findOne({ where: { email } });
+    return this.employeeRepo.findOne({ where: { email } });
   }
 
   async changePassword(params: ChangePasswordDto, userId: string) {
-    const user = await this.userRepo.findOne({
+    const user = await this.employeeRepo.findOne({
       where: { id: userId },
     });
     if (!user) throw new BadRequestException('User was not found!');
@@ -201,7 +199,7 @@ export class UserService {
     if (!isMatch) {
       throw new BadRequestException('The password is wrong!');
     }
-    await this.userRepo.update(
+    await this.employeeRepo.update(
       {
         password: await bcrypt.hash(params.newPassword, 10),
       },

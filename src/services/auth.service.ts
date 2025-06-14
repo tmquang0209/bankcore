@@ -1,6 +1,6 @@
 import { generatePassword } from '@common/utils';
 import { BasicInfoDto, ForgotPasswordDto, LoginDto } from '@dto';
-import { PermissionEntity, RoleEntity, UserEntity } from '@entities';
+import { EmployeeEntity, PermissionEntity, RoleEntity } from '@entities';
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
@@ -11,15 +11,15 @@ import { MailService } from './mail.service';
 @Injectable()
 export class AuthService {
   constructor(
-    @InjectModel(UserEntity)
-    private userRepo: typeof UserEntity,
+    @InjectModel(EmployeeEntity)
+    private readonly employeeRepo: typeof EmployeeEntity,
     private readonly jwtService: JwtService,
-    private configService: ConfigService,
+    private readonly configService: ConfigService,
     private readonly mailService: MailService,
   ) {}
 
   async login(params: LoginDto): Promise<BasicInfoDto> {
-    const userExist = await this.userRepo.findOne({
+    const userExist = await this.employeeRepo.findOne({
       where: { email: params.email, status: true },
       attributes: {
         exclude: ['refreshToken', 'updatedAt', 'createdAt', 'roleId'],
@@ -49,7 +49,7 @@ export class AuthService {
       await this.generateJwt(userExist);
 
     // save refresh token
-    await this.userRepo.update(
+    await this.employeeRepo.update(
       {
         refreshToken: refreshTokenNew,
       },
@@ -65,14 +65,23 @@ export class AuthService {
       refreshToken: refreshTokenNew,
       id: userExist.id,
       email: userExist.email,
-      fullName: userExist.fullName,
-      phoneNumber: userExist.phoneNumber,
+      name: userExist.name,
+      phone: userExist.phone,
       status: userExist.status,
-      role: userExist.role,
+      role: {
+        id: userExist.role.id,
+        name: userExist.role.name,
+        code: userExist.role.code,
+        permissions: userExist.role.permissions.map((permission) => ({
+          id: permission.id,
+          name: permission.name,
+          code: permission.code,
+        })),
+      },
     };
   }
 
-  async generateJwt(user: UserEntity) {
+  async generateJwt(user: EmployeeEntity) {
     const [accessToken, refreshToken] = await Promise.all([
       this.generateAccessToken(user),
       this.generateRefreshToken(user),
@@ -84,11 +93,11 @@ export class AuthService {
     };
   }
 
-  async generateAccessToken(user: UserEntity) {
+  async generateAccessToken(user: EmployeeEntity) {
     const payload = {
       sub: user.id,
-      iss: 'virtual-docs',
-      aud: 'virtual-docs-web',
+      iss: 'bankcore',
+      aud: 'bankcore-web',
       email: user.email,
       role: user.role,
     };
@@ -99,7 +108,7 @@ export class AuthService {
     });
   }
 
-  async generateRefreshToken(user: UserEntity) {
+  async generateRefreshToken(user: EmployeeEntity) {
     return this.jwtService.signAsync(
       { id: user.id },
       {
@@ -114,7 +123,7 @@ export class AuthService {
     userId: string,
     refreshToken: string,
   ): Promise<Omit<BasicInfoDto, 'refreshToken'>> {
-    const user = await this.userRepo.findOne({
+    const user = await this.employeeRepo.findOne({
       where: {
         id: userId,
         refreshToken,
@@ -130,8 +139,8 @@ export class AuthService {
     return {
       id: user.id,
       email: user.email,
-      fullName: user.fullName,
-      phoneNumber: user.phoneNumber,
+      name: user.name,
+      phone: user.phone,
       status: user.status,
       role: {
         id: user.role.id,
@@ -150,7 +159,7 @@ export class AuthService {
   async sendNewPassword(params: ForgotPasswordDto): Promise<{
     success: boolean;
   }> {
-    const user = await this.userRepo.findOne({
+    const user = await this.employeeRepo.findOne({
       where: {
         email: params.email,
       },
