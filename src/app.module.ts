@@ -5,6 +5,7 @@ import {
   AuthController,
   CustomerController,
   EmployeeController,
+  TransactionController,
   UploadController,
 } from '@controllers';
 import {
@@ -40,6 +41,7 @@ import {
   MailService,
   MinioService,
   RoleService,
+  TransactionService,
 } from '@services';
 import { join } from 'path';
 import { RoleController } from './controllers/role.controller';
@@ -109,6 +111,7 @@ import { RoleController } from './controllers/role.controller';
     RoleController,
     CustomerController,
     AccountController,
+    TransactionController,
   ], // need to add controllers here
   providers: [
     AuthService,
@@ -118,6 +121,7 @@ import { RoleController } from './controllers/role.controller';
     MailService,
     RoleService,
     AccountService,
+    TransactionService,
     JwtStrategy,
     RefreshTokenStrategy,
   ], // need to add providers here

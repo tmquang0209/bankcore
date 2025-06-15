@@ -5,3 +5,4 @@ export * from './employee.service';
 export * from './mail.service';
 export * from './minio.service';
 export * from './role.service';
+export * from './transaction.service';

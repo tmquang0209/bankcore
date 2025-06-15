@@ -36,7 +36,7 @@ export class TransactionEntity extends BaseEntity<TransactionEntity> {
     type: DataType.UUID,
     allowNull: false,
   })
-  recipientAccountId?: string;
+  receiverId?: string;
 
   @ForeignKey(() => TransactionTypeEntity)
   @Column({
