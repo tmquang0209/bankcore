@@ -1,6 +1,10 @@
 import { databaseConfig } from '@common/database';
 import { JwtStrategy, RefreshTokenStrategy } from '@common/guards';
-import { AuthController, UploadController, UserController } from '@controllers';
+import {
+  AuthController,
+  EmployeeController,
+  UploadController,
+} from '@controllers';
 import {
   AccountEntity,
   AccountTypeEntity,
@@ -28,10 +32,10 @@ import { JwtModule } from '@nestjs/jwt';
 import { SequelizeModule } from '@nestjs/sequelize';
 import {
   AuthService,
+  EmployeeService,
   MailService,
   MinioService,
   RoleService,
-  UserService,
 } from '@services';
 import { join } from 'path';
 import { RoleController } from './controllers/role.controller';
@@ -95,14 +99,14 @@ import { RoleController } from './controllers/role.controller';
     }),
   ],
   controllers: [
-    UserController,
+    EmployeeController,
     AuthController,
     UploadController,
     RoleController,
   ], // need to add controllers here
   providers: [
     AuthService,
-    UserService,
+    EmployeeService,
     MinioService,
     MailService,
     RoleService,

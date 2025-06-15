@@ -68,16 +68,7 @@ export class AuthService {
       name: userExist.name,
       phone: userExist.phone,
       status: userExist.status,
-      role: {
-        id: userExist.role.id,
-        name: userExist.role.name,
-        code: userExist.role.code,
-        permissions: userExist.role.permissions.map((permission) => ({
-          id: permission.id,
-          name: permission.name,
-          code: permission.code,
-        })),
-      },
+      role: userExist.role,
     };
   }
 

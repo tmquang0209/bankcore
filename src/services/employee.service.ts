@@ -19,15 +19,13 @@ import {
 import { InjectModel } from '@nestjs/sequelize';
 import { RoleService } from '@services';
 import * as bcrypt from 'bcryptjs';
-import { Sequelize } from 'sequelize-typescript';
 
 @Injectable()
-export class UserService {
+export class EmployeeService {
   constructor(
     @InjectModel(EmployeeEntity)
     private readonly employeeRepo: typeof EmployeeEntity,
     private readonly roleService: RoleService,
-    private readonly sequelize: Sequelize,
   ) {}
 
   async createUser(params: CreateUserDto) {
@@ -85,48 +83,27 @@ export class UserService {
     // Update user
     await user.update(params);
 
-    // Fetch permissions for the updated role
-    const permissions = await PermissionEntity.findAll({
-      include: [
-        {
-          model: RolePermissionsEntity,
-          where: { roleId: user.role.id },
-          attributes: [],
-        },
-      ],
-    });
-
     return {
       id: user.id,
       name: user.name,
       email: user.email,
       phone: user.phone,
       status: user.status,
-      role: {
-        id: user.role.id,
-        name: user.role.name,
-        code: user.role.code,
-        permissions: permissions.map((permission) => ({
-          id: permission.id,
-          name: permission.name,
-          code: permission.code,
-        })),
-      },
+      role: user.role,
     };
   }
 
   async getListUsers() {
-    // return await this.employeeRepo.findAll({
-    //   attributes: ['id', 'fullName', 'email'],
-    //   where: { status: UserStatus.ACTIVE },
-    //   include: [
-    //     {
-    //       model: RoleEntity,
-    //       required: true,
-    //       attributes: ['id', 'roleName'],
-    //     },
-    //   ],
-    // });
+    return await this.employeeRepo.findAll({
+      attributes: ['id', 'fullName', 'email'],
+      include: [
+        {
+          model: RoleEntity,
+          required: true,
+          attributes: ['id', 'roleName'],
+        },
+      ],
+    });
   }
 
   async getUserById(
