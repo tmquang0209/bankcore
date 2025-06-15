@@ -98,4 +98,18 @@ export class AuthController {
   getRoleById(@Param('roleId') roleId: string) {
     return this.roleService.findById(roleId);
   }
+
+  @Post('customer/login')
+  @ResponseMessage('Đăng nhập khách hàng thành công!')
+  @ApiOperation({ summary: 'Đăng nhập khách hàng' })
+  @ApiBody({ type: LoginDto })
+  @ApiResponse({
+    status: 200,
+    description: 'Đăng nhập khách hàng thành công!',
+    type: BasicInfoDto,
+  })
+  @ApiResponse({ status: 400, description: 'Yêu cầu không hợp lệ' })
+  loginCustomer(@Body() params: LoginDto) {
+    return this.authService.loginCustomer(params);
+  }
 }

@@ -101,6 +101,13 @@ export class CustomerEntity extends BaseEntity<CustomerEntity> {
   })
   status: boolean;
 
+  @Column({
+    field: 'refresh_token',
+    type: DataType.STRING,
+    allowNull: true,
+  })
+  refreshToken: string;
+
   @HasMany(() => CustomerLogEntity, {
     foreignKey: 'customerId',
     sourceKey: 'id',

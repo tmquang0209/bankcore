@@ -1,11 +1,17 @@
 import { generatePassword } from '@common/utils';
 import { BasicInfoDto, ForgotPasswordDto, LoginDto } from '@dto';
-import { EmployeeEntity, PermissionEntity, RoleEntity } from '@entities';
+import {
+  CustomerEntity,
+  EmployeeEntity,
+  PermissionEntity,
+  RoleEntity,
+} from '@entities';
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { InjectModel } from '@nestjs/sequelize';
 import * as bcrypt from 'bcryptjs';
+import { Op } from 'sequelize';
 import { MailService } from './mail.service';
 
 @Injectable()
@@ -13,6 +19,8 @@ export class AuthService {
   constructor(
     @InjectModel(EmployeeEntity)
     private readonly employeeRepo: typeof EmployeeEntity,
+    @InjectModel(CustomerEntity)
+    private readonly customerRepo: typeof CustomerEntity,
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
     private readonly mailService: MailService,
@@ -20,7 +28,10 @@ export class AuthService {
 
   async login(params: LoginDto): Promise<BasicInfoDto> {
     const userExist = await this.employeeRepo.findOne({
-      where: { email: params.email, status: true },
+      where: {
+        [Op.or]: { email: params.username, username: params.username },
+        status: true,
+      },
       attributes: {
         exclude: ['refreshToken', 'updatedAt', 'createdAt', 'roleId'],
       },
@@ -72,7 +83,7 @@ export class AuthService {
     };
   }
 
-  async generateJwt(user: EmployeeEntity) {
+  async generateJwt(user: EmployeeEntity | CustomerEntity) {
     const [accessToken, refreshToken] = await Promise.all([
       this.generateAccessToken(user),
       this.generateRefreshToken(user),
@@ -84,13 +95,13 @@ export class AuthService {
     };
   }
 
-  async generateAccessToken(user: EmployeeEntity) {
+  async generateAccessToken(user: EmployeeEntity | CustomerEntity) {
     const payload = {
       sub: user.id,
       iss: 'bankcore',
       aud: 'bankcore-web',
       email: user.email,
-      role: user.role,
+      role: 'role' in user ? user.role : undefined,
     };
 
     return this.jwtService.signAsync(payload, {
@@ -99,7 +110,7 @@ export class AuthService {
     });
   }
 
-  async generateRefreshToken(user: EmployeeEntity) {
+  async generateRefreshToken(user: EmployeeEntity | CustomerEntity) {
     return this.jwtService.signAsync(
       { id: user.id },
       {
@@ -170,6 +181,36 @@ export class AuthService {
 
     return {
       success: true,
+    };
+  }
+
+  async loginCustomer(params: LoginDto): Promise<BasicInfoDto> {
+    const customer = await this.customerRepo.findOne({
+      where: { [Op.or]: { email: params.username, username: params.username } },
+      attributes: {
+        exclude: ['updatedAt', 'createdAt'],
+      },
+    });
+
+    if (!customer) throw new BadRequestException('Không tìm thấy khách hàng');
+
+    const isMatch = await bcrypt.compare(params.password, customer.password);
+    if (!isMatch) throw new BadRequestException('Mật khẩu không đúng');
+
+    const { accessToken, refreshToken: refreshTokenNew } =
+      await this.generateJwt(customer);
+
+    await this.customerRepo.update(
+      { refreshToken: refreshTokenNew },
+      { where: { id: customer.id } },
+    );
+
+    customer.setDataValue('password', ''); // Remove password from response
+
+    return {
+      ...customer.get(),
+      accessToken,
+      refreshToken: refreshTokenNew,
     };
   }
 }

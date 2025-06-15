@@ -1,13 +1,3 @@
-// Table TaiKhoan {
-//   MaTaiKhoan varchar [pk]
-//   MaKhachHang varchar [ref: > KhachHang.MaKhachHang]
-//   MaLoaiTaiKhoan varchar [ref: > LoaiTaiKhoan.MaLoaiTaiKhoan]
-//   SoTaiKhoan varchar
-//   SoDu decimal
-//   MaTienTe varchar [ref: > TienTe.MaTienTe]
-//   NgayMoTaiKhoan date
-//   TrangThai varchar
-// }
 import { BaseEntity } from '@common/database';
 import { EAccountStatus } from '@common/enums';
 import { AccountTypeEntity, CustomerEntity } from '@entities';
@@ -73,6 +63,7 @@ export class AccountEntity extends BaseEntity<AccountEntity> {
     field: 'ngay_mo_tai_khoan',
     type: DataType.DATE,
     allowNull: false,
+    defaultValue: DataType.NOW,
   })
   declare openingDate: Date;
 

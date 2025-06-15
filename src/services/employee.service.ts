@@ -13,6 +13,8 @@ import {
 import {
   BadRequestException,
   ConflictException,
+  forwardRef,
+  Inject,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -25,6 +27,7 @@ export class EmployeeService {
   constructor(
     @InjectModel(EmployeeEntity)
     private readonly employeeRepo: typeof EmployeeEntity,
+    @Inject(forwardRef(() => RoleService))
     private readonly roleService: RoleService,
   ) {}
 
