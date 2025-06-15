@@ -83,7 +83,7 @@ export class BankAccountDetailDto {
 }
 
 export class BankAccountListItemDto {
-  @ApiProperty()
+  @ApiProperty({ description: 'ID tài khoản', format: 'uuid' })
   id: string;
 
   @ApiProperty()

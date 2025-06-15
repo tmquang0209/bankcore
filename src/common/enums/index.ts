@@ -1,4 +1,5 @@
 export * from './account.enum';
+export * from './loan.enum';
 export * from './permissions.enum';
 export * from './system-log.enum';
 export * from './transaction.enum';

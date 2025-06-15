@@ -1,4 +1,5 @@
 import { BaseEntity } from '@common/database';
+import { ELoanStatus } from '@common/enums';
 import {
   BelongsTo,
   Column,
@@ -44,8 +45,13 @@ export class LoanEntity extends BaseEntity<LoanEntity> {
   @Column({ field: 'ngay_vay', type: DataType.DATEONLY, allowNull: false })
   loanDate: Date;
 
-  @Column({ field: 'trang_thai', type: DataType.STRING, allowNull: false })
-  status: string;
+  @Column({
+    field: 'trang_thai',
+    type: DataType.ENUM(...Object.values(ELoanStatus)),
+    allowNull: false,
+    defaultValue: ELoanStatus.ACTIVE,
+  })
+  status: ELoanStatus;
 
   @BelongsTo(() => AccountEntity, {
     foreignKey: 'accountId',

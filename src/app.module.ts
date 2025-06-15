@@ -5,6 +5,7 @@ import {
   AuthController,
   CustomerController,
   EmployeeController,
+  LoanController,
   TransactionController,
   UploadController,
 } from '@controllers';
@@ -38,6 +39,7 @@ import {
   AuthService,
   CustomerService,
   EmployeeService,
+  LoanService,
   MailService,
   MinioService,
   RoleService,
@@ -112,6 +114,7 @@ import { RoleController } from './controllers/role.controller';
     CustomerController,
     AccountController,
     TransactionController,
+    LoanController,
   ], // need to add controllers here
   providers: [
     AuthService,
@@ -122,6 +125,7 @@ import { RoleController } from './controllers/role.controller';
     RoleService,
     AccountService,
     TransactionService,
+    LoanService,
     JwtStrategy,
     RefreshTokenStrategy,
   ], // need to add providers here
